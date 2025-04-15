@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
@@ -14,10 +14,8 @@ const { verifyToken, isAdmin } = require('./middleware/authMiddleware');
 const app = express();
 
 // Kết nối MongoDB
-mongoose.connect('mongodb://localhost:27017/moviedb', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => console.log('✅ Kết nối MongoDB thành công'))
+mongoose.connect('mongodb+srv://admin:admin123@cloud.xjz9eoo.mongodb.net/moviedb?retryWrites=true&w=majority&appName=Cloud')
+.then(() => console.log('✅ Kết nối MongoDB thành công'))
   .catch(err => console.error('❌ Lỗi kết nối MongoDB:', err));
 
 // Middleware
