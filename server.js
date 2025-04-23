@@ -51,17 +51,42 @@ createAdmin();
 app.post('/api/register', async (req, res) => {
   try {
     const { username, password } = req.body;
+
+    // ✅ Kiểm tra dữ liệu đầu vào
+    if (!username || !username.trim()) {
+      return res.status(400).json({ message: 'Vui lòng nhập tên người dùng' });
+    }
+
+    if (!password || !password.trim()) {
+      return res.status(400).json({ message: 'Vui lòng nhập mật khẩu' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Mật khẩu phải có ít nhất 6 ký tự' });
+    }
+
+    // ✅ Kiểm tra trùng username
     if (await User.findOne({ username })) {
       return res.status(400).json({ message: 'Tên người dùng đã tồn tại' });
     }
+
+    // ✅ Hash mật khẩu và lưu người dùng
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, password: hashedPassword, role: 'user' });
+    const newUser = new User({
+      username,
+      password: hashedPassword,
+      role: 'user'
+    });
+
     await newUser.save();
     res.status(201).json({ message: 'Đăng ký thành công' });
+
   } catch (error) {
+    console.error('❌ Lỗi trong API /register:', error);
     res.status(500).json({ message: 'Lỗi server' });
   }
 });
+
 
 // API Đăng nhập
 app.post('/api/login', async (req, res) => {
